@@ -30,9 +30,7 @@ class DocumentForm
                     ->relationship('documentType', 'name')
                     ->searchable() // Makes the list of document types searchable
                     ->required(),
-
-                // Add the file picker for Spatie Media Library.
-                // This assumes your media collection is named 'attachments'.
+                    
                 SpatieMediaLibraryFileUpload::make('files')
                     ->collection('files'),
                 
