@@ -15,15 +15,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('documents:remind-expiry')
             ->dailyAt('10:00')
             ->timezone('Africa/Tripoli');
-        
-        $schedule->call(function () {
-            for ($i = 0; $i < 3; $i++) {
-                \Artisan::call('documents:remind-expiry');
-                Log::info('documents:remind-expiry executed at '.now());
-
-                sleep(20);
-            }
-        })->everyMinute();
     }
 
     /**
