@@ -21,6 +21,7 @@ class Document extends Model implements HasMedia
         'document_type_id',
         'issued_date',
         'submission_date',
+        'expiry_date',
     ];
 
     /**

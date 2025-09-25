@@ -45,4 +45,5 @@ class DocumentResource extends Resource
             'edit' => EditDocument::route('/{record}/edit'),
         ];
     }
+
 }

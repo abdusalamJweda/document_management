@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Models\Document;
+use App\Models\Employee;
 
 class DocumentExpiryReminder extends Notification
 {
@@ -39,6 +40,7 @@ class DocumentExpiryReminder extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $ccRecipients = Employee::where('type', 'admin')->pluck('email')->toArray();
         return (new MailMessage)
             ->subject('Document Expiry Reminder')
             ->greeting('Hello, ' . $notifiable->name . '!')
@@ -46,6 +48,7 @@ class DocumentExpiryReminder extends Notification
             ->line('Issued Date: ' . $this->document->issued_date->format('M d, Y'))
             ->line('Please take the necessary steps to renew it.')
             ->action('View Document', url('/documents/' . $this->document->id))
+            ->cc($ccRecipients ?? [])
             ->line('Thank you!');
     }
 }

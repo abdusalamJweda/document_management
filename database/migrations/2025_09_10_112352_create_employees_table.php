@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
+            $table->string('type')->nullable();
             $table->string('job_title');
             $table->string('employee_id')->unique();
             $table->timestamps();
