@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->foreignId('document_type_id')->constrained()->cascadeOnDelete();
             $table->date('issued_date');
+            $table->date('expiry_date')->nullable();
             $table->date('submission_date');
             $table->boolean('is_expired')->default(false);
             $table->timestamps();

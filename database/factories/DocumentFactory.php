@@ -33,9 +33,12 @@ class DocumentFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function ($document) {
-            // Using a fake image URL from Faker
+            $expiryDate = $document->issued_date->addDays($document->documentType->expiry_duration_days);
+
+            $document->update(['expiry_date' => $expiryDate]);
             $document->addMediaFromUrl("https://s2.q4cdn.com/175719177/files/doc_presentations/Placeholder-PDF.pdf")
                 ->toMediaCollection('files');
+            $document->expiry_days = $document->documentType->expiry_duration_days;
         });
     }
 }

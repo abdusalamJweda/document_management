@@ -13,12 +13,14 @@ class DocumentTypesTable
     public static function configure(Table $table): Table
     {
         return $table
+        
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('expiry_duration_days')
                     ->numeric()
                     ->sortable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
