@@ -48,7 +48,7 @@ class SendDocumentExpiryReminders extends Command
                 $expiryDate = $issued_at->addDays($document->documentType->expiry_duration_days);
                 
                 // Check if the expiry date is exactly 10 days from now
-                return Carbon::today()->diffInDays($expiryDate, false) === 10;
+                return Carbon::today()->diffInDays($expiryDate, false) <= 10;
             });
 
         foreach ($documents as $document) {
