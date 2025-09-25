@@ -28,7 +28,8 @@ class DocumentForm
                 // It assumes you have a 'name' column in your DocumentType model.
                 Select::make('document_type_id')
                     ->relationship('documentType', 'name')
-                    ->searchable() // Makes the list of document types searchable
+                    ->searchable()
+                    ->preload() // Makes the list of document types searchable
                     ->required(),
                     
                 SpatieMediaLibraryFileUpload::make('files')

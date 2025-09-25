@@ -51,9 +51,16 @@ class Document extends Model implements HasMedia
 
         public function getFileAttribute(): ?string
     {
-        $media = $this->getFirstMedia('files');
+        return $this->getFirstMediaUrl('files');
 
-        return $media ? $media->getUrl() : '';
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('files')
+            ->useDisk('public') // or 'media' if you want private
+            ->singleFile();     // optional, forces only 1 file per document
     }
 
     

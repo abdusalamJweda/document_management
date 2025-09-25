@@ -7,6 +7,7 @@ use App\Models\Document;
 use App\Notifications\DocumentExpiryReminder;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
+use Log;
 
 class SendDocumentExpiryReminders extends Command
 {
@@ -29,6 +30,8 @@ class SendDocumentExpiryReminders extends Command
      */
     public function handle()
     {
+        Log::info('Document expiry reminders started successfully at '.now());
+
         $today = Carbon::today();
 
         // Get documents that are not expired and will expire in exactly 10 days
@@ -41,10 +44,11 @@ class SendDocumentExpiryReminders extends Command
             ->get()
             ->filter(function ($document) {
                 // Calculate the expiry date
-                $expiryDate = $document->issued_date->addDays($document->documentType->expiry_duration_days);
+                $issued_at = Carbon::parse($document->issued_date);
+                $expiryDate = $issued_at->addDays($document->documentType->expiry_duration_days);
                 
                 // Check if the expiry date is exactly 10 days from now
-                return Carbon::today()->diffInDays($expiryDate, false) === 10;
+                return Carbon::today()->diffInDays($expiryDate, false) <= 10;
             });
 
         foreach ($documents as $document) {
