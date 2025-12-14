@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Notifications\Notification;
 use App\Notifications\DocumentExpiryReminder;
 use App\Models\Document;
+use App\Models\EmailLog;
 class DocumentsTable
 {
     public static function configure(Table $table): Table
@@ -76,28 +77,25 @@ class DocumentsTable
                     ->icon('heroicon-o-paper-airplane')
                     ->color('info')
                     ->action(function (Document $record) {
-
-                        $employee = $record->employee;
-
-                        // Check if the employee relationship exists and is "notifiable"
-                        // if (!$employee || !method_exists($employee, 'notify')) {
-                        //     Notification::make()
-                        //         ->title('Error')
-                        //         ->body('Employee record or Notification trait not found.')
-                        //         ->danger()
-                        //         ->send();
-                        //     return;
-                        // }
-
-                        // Call the employee's notify method with your custom Notification class
-                        $employee->notify(new DocumentExpiryReminder($record));
                         
-                        // Confirmation Notification
+                        try {
+                            $employee = $record->employee;
+
+                        $employee->notify(new DocumentExpiryReminder($record));
+                        EmailLog::create([
+                            'employee_id' => $employee->id,
+                            'document_id' => $record->id,
+                            'document_type_id' => $record->document_type_id,
+                        ]);
+
                         Notification::make()
                             ->title('Reminder Email Queued')
                             ->body("A reminder for the **{$record->documentType->name}** document has been sent to **{$employee->name}**.")
                             ->success()
                             ->send();
+                        } catch (\Throwable $th) {
+                            throw $th;
+                        }
                     })
                     // Only show the button if an expiry date and a linked employee exists
                     ->visible(fn (Document $record): bool => (bool) $record->employee && $record->expiry_date) 

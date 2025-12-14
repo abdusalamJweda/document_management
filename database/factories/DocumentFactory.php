@@ -27,6 +27,7 @@ class DocumentFactory extends Factory
             'document_type_id' => DocumentType::inRandomOrder()->first()->id,
             'issued_date' => $issuedDate,
             'submission_date' => $submissionDate,
+            'last_reminder_date' => $this->faker->dateTimeBetween($issuedDate, $submissionDate),
         ];
     }
 

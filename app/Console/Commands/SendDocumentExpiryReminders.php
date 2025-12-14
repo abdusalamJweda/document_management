@@ -4,10 +4,12 @@
 namespace App\Console\Commands;
 
 use App\Models\Document;
+use App\Models\EmailLog;
 use App\Notifications\DocumentExpiryReminder;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Log;
+use Symfony\Component\Mime\Email;
 
 class SendDocumentExpiryReminders extends Command
 {
@@ -54,8 +56,19 @@ class SendDocumentExpiryReminders extends Command
         foreach ($documents as $document) {
             $employee = $document->employee;
             if ($employee && $employee->email) {
-                $employee->notify(new DocumentExpiryReminder($document));
+                try {
+                    $employee->notify(new DocumentExpiryReminder($document));
+                EmailLog::create([
+                    'employee_id' => $employee->id,
+                    'document_id' => $document->id,
+                    'document_type_id' => $document->document_type_id,
+                ]);
+                $document->last_reminder_date = Carbon::now();
+                $document->save();
                 $this->info("Sent expiry reminder for document ID {$document->id} to {$employee->email}");
+                } catch (\Throwable $th) {
+                    throw $th;
+                }
             }
         }
 

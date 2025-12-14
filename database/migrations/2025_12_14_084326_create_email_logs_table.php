@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documents', function (Blueprint $table) {
+        Schema::create('email_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->foreignId('document_type_id')->constrained()->cascadeOnDelete();
-            $table->date('issued_date');
-            $table->date('expiry_date')->nullable();
-            $table->date('last_reminder_date')->nullable();
-            $table->date('submission_date');
-            // $table->boolean('is_expired')->default(false);
+            $table->foreignId('document_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('email_logs');
     }
 };

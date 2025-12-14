@@ -40,9 +40,6 @@ class DocumentForm
                 
                 DatePicker::make('submission_date')
                     ->required(),
-                
-                Toggle::make('is_expired')
-                    ->required(),
             ]);
     }
 }

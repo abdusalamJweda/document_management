@@ -19,4 +19,12 @@ class DocumentType extends Model
         'description',
         'expiry_duration_days',
     ];
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+    public function emailLog(){
+        return $this->hasMany(EmailLog::class);
+    }
 }

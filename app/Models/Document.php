@@ -49,8 +49,11 @@ class Document extends Model implements HasMedia
     {
         return $this->belongsTo(DocumentType::class);
     }
+    public function emailLog(){
+        return $this->hasMany(EmailLog::class);
+    }
 
-        public function getFileAttribute(): ?string
+    public function getFileAttribute(): ?string
     {
         return $this->getFirstMediaUrl('files');
 
@@ -62,6 +65,16 @@ class Document extends Model implements HasMedia
             ->addMediaCollection('files')
             ->useDisk('public') // or 'media' if you want private
             ->singleFile();     // optional, forces only 1 file per document
+    }
+    public function getIsExpiredAttribute(): bool
+    {
+        // The expiry_date is cast to a Carbon instance because of protected $casts
+        // Check if expiry_date is set and if the current date is after the expiry date.
+        if ($this->expiry_date) {
+            return now()->greaterThan($this->expiry_date);
+        }
+
+        return false; // Not expired if no expiry date is set
     }
 
     

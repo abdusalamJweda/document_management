@@ -13,7 +13,11 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-
+use App\Filament\Resources\Employees\Pages\ViewEmployee;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use App\Models\Document;
+use Filament\Infolists\Components\RepeatableEntry;
 class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
@@ -42,7 +46,69 @@ class EmployeeResource extends Resource
         return [
             'index' => ListEmployees::route('/'),
             'create' => CreateEmployee::route('/create'),
+            'view' => ViewEmployee::route('/{record}'),
             'edit' => EditEmployee::route('/{record}/edit'),
         ];
     }
+
+public static function infolist(Schema $schema): Schema
+{
+    return $schema
+        ->components([
+            Section::make('Employee Details')
+                // ... (Your existing employee details components)
+                ->columns(2)
+                ->components([
+                    TextEntry::make('first_name'),
+                    TextEntry::make('last_name'),
+                    TextEntry::make('email')
+                        ->label('Email Address'),
+                    TextEntry::make('employee_id'),
+                    TextEntry::make('job_title'),
+                ]),
+            
+            // Section::make('Timestamps')
+            //     // ... (Your existing timestamps section)
+            //     ->columns(2)
+            //     ->components([
+            //         TextEntry::make('created_at')->dateTime(),
+            //         TextEntry::make('updated_at')->dateTime(),
+            //     ]),
+
+            // Section to display associated documents
+            Section::make('Associated Documents')
+                ->columns(1)
+                ->schema([
+                    // Use RepeatableEntry with the relationship name 'documents'
+                    RepeatableEntry::make('documents')
+                        ->label('Employee Files')
+                        ->schema([
+                            TextEntry::make('documentType.name')
+                                ->label('Document Type'),
+
+                            TextEntry::make('issued_date')
+                                ->label('Issue Date')
+                                ->date(),
+
+                            TextEntry::make('expiry_date')
+                                ->label('Expiry Date')
+                                ->date(),
+
+                            // Component to show the file name as a download link
+                            TextEntry::make('file_download')
+                                ->label('Download File')
+                                // Get the file name from the 'files' media collection
+                                ->getStateUsing(fn (Document $record): ?string => $record->getFirstMedia('files')?->file_name)
+                                // Set the URL for the link to the media file
+                                ->url(fn (Document $record): ?string => $record->getFirstMediaUrl('files'), true)
+                                ->icon('heroicon-o-arrow-down-tray')
+                                ->color('primary')
+                                ->openUrlInNewTab(),
+                        ])
+                        ->columns(4)
+                        ->contained(),
+                        // The line ->emptyStateDescription(...) has been removed.
+                ]),
+        ]);
+}
 }

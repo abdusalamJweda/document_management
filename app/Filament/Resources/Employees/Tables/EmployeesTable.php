@@ -7,7 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-
+use Filament\Actions\ViewAction;
 class EmployeesTable
 {
     public static function configure(Table $table): Table
@@ -39,6 +39,7 @@ class EmployeesTable
             ])
             ->recordActions([
                 EditAction::make(),
+                ViewAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
