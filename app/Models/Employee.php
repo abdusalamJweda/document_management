@@ -24,7 +24,7 @@ class Employee extends Model
         'employee_id',
         'department_id',
     ];
-protected $appends = ['name'];
+// protected $appends = ['name'];
     public function documents()
     {
         return $this->hasMany(Document::class);

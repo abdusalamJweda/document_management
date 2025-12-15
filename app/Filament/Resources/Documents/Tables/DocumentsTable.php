@@ -52,7 +52,7 @@ class DocumentsTable
                     ->searchable(),
 
                 TextColumn::make('employee.department.name')
-                    ->label('Document Type')
+                    ->label('Department')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('file')

@@ -41,14 +41,24 @@ class DocumentExpiryReminder extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $ccRecipients = Employee::where('type', 'admin')->pluck('email')->toArray();
+        
         return (new MailMessage)
-            ->subject('Document Expiry Reminder')
-            ->greeting('Hello, ' . $notifiable->name . '!')
-            ->line('Your document "' . $this->document->documentType->name . '" is expiring in 10 days.')
-            ->line('Issued Date: ' . $this->document->issued_date->format('M d, Y'))
-            ->line('Please take the necessary steps to renew it.')
-            ->action('View Document', url('/documents/' . $this->document->id))
-            ->cc($ccRecipients ?? [])
-            ->line('Thank you!');
+            ->subject('Urgent: Document Expiry Reminder') // Using a clear subject
+            ->markdown('emails.document-expiry-reminder', [ // Referencing the new Blade file
+                'notifiable' => $notifiable,
+                'document' => $this->document, 
+            ])
+            ->cc($ccRecipients ?? []);
+            
+        // $ccRecipients = Employee::where('type', 'admin')->pluck('email')->toArray();
+        // return (new MailMessage)
+        //     ->subject('Document Expiry Reminder')
+        //     ->greeting('Hello, ' . $notifiable->name . '!')
+        //     ->line('Your document "' . $this->document->documentType->name . '" is expiring in 10 days.')
+        //     ->line('Issued Date: ' . $this->document->issued_date->format('M d, Y'))
+        //     ->line('Please take the necessary steps to renew it.')
+        //     ->action('View Document', url('/documents/' . $this->document->id))
+        //     ->cc($ccRecipients ?? [])
+        //     ->line('Thank you!');
     }
 }

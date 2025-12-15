@@ -237,7 +237,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'it@tfgroup.ly'),
+        'address' => env('MAIL_FROM_ADDRESS', 'hr@tfgroup.ly'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
