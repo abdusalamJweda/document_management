@@ -12,9 +12,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // Example: run your expiry reminders at 10 AM Libya time
+        // $schedule->command('documents:remind-expiry')
+        //     ->dailyAt('10:00')
+        //     ->timezone('Africa/Tripoli');
         $schedule->command('documents:remind-expiry')
-            ->dailyAt('10:00')
-            ->timezone('Africa/Tripoli');
+            ->everyMinute();
     }
 
     /**
