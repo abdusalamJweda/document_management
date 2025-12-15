@@ -16,8 +16,7 @@ class EmployeesTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                // TextColumn::make('last_name')
-                //     ->searchable(),
+                
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),

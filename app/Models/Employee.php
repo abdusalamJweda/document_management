@@ -17,14 +17,13 @@ class Employee extends Model
      * @var array
      */
     protected $fillable = [
-        // 'first_name',
+        
         'name',
         'email',
         'job_title',
         'employee_id',
         'department_id',
     ];
-// protected $appends = ['name'];
     public function documents()
     {
         return $this->hasMany(Document::class);

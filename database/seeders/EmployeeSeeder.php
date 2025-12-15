@@ -16,7 +16,6 @@ class EmployeeSeeder extends Seeder
         // Employee::factory()->count(30)->create();
         Employee::create([
             'name' => 'Hend Bengoula',
-            // 'last_name' => 'Bengoula',
             'email' => 'h.bengoulla@tfgroup.ly',
             'type' => 'admin',
             'job_title' => 'Admin',
@@ -25,7 +24,6 @@ class EmployeeSeeder extends Seeder
         ]);
         Employee::create([
             'name' => 'Abdusalam Jweda',
-            // 'last_name' => 'Jwedaa',
             'email' => 'a.jweda@tfgroup.ly',
             'type' => 'admin',
             'job_title' => 'Admin',
@@ -34,7 +32,6 @@ class EmployeeSeeder extends Seeder
         ]);
         Employee::create([
             'name' => 'Muhaned Zbeda',
-            // 'last_name' => 'Jwedaa',
             'email' => 'm.zbeda@tfgroup.ly',
             // 'type' => 'admin',
             'job_title' => 'Head',
@@ -43,7 +40,6 @@ class EmployeeSeeder extends Seeder
         ]);
         Employee::create([
             'name' => 'Aziz Badi',
-            // 'last_name' => 'Jwedaa',
             'email' => 'a.badi@tfgroup.ly',
             // 'type' => 'admin',
             'job_title' => 'Machine operator',

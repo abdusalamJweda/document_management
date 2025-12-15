@@ -60,22 +60,14 @@ public static function infolist(Schema $schema): Schema
                 ->columns(2)
                 ->components([
                     TextEntry::make('name'),
-                    // TextEntry::make('last_name'),
+                    
                     TextEntry::make('email')
                         ->label('Email Address'),
                     TextEntry::make('employee_id'),
                     TextEntry::make('job_title'),
                 ]),
             
-            // Section::make('Timestamps')
-            //     // ... (Your existing timestamps section)
-            //     ->columns(2)
-            //     ->components([
-            //         TextEntry::make('created_at')->dateTime(),
-            //         TextEntry::make('updated_at')->dateTime(),
-            //     ]),
-
-            // Section to display associated documents
+           
             Section::make('Associated Documents')
                 ->columns(1)
                 ->schema([

@@ -15,7 +15,8 @@ class UserSeeder extends Seeder
     {
         
         User::factory()->create([
-            'email' => 'admin@admin.com',
+            'name' => 'Hend Bengoula',
+            'email' => 'h.bengoulla@tfgroup.ly',
             'password' => Hash::make('password'),
         ])->assignRole('admin');
         User::factory(10)->create();

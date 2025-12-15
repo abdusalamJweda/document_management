@@ -42,7 +42,7 @@ class EmailLogsTable
             ->filters([
                 // Relationship Filters
                 SelectFilter::make('employee_id')
-                    ->relationship('employee', 'last_name')
+                    ->relationship('employee', 'name')
                     ->searchable()
                     ->preload()
                     ->label('Filter by Employee'), // Custom label
