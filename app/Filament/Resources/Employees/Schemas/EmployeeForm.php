@@ -13,8 +13,8 @@ class EmployeeForm
             ->components([
                 // TextInput::make('first_name')
                 //     ->required(),
-                TextInput::make('name')
-                    ->required(),
+                // TextInput::make('name')
+                //     ->required(),
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()

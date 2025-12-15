@@ -59,8 +59,8 @@ public static function infolist(Schema $schema): Schema
                 // ... (Your existing employee details components)
                 ->columns(2)
                 ->components([
-                    TextEntry::make('first_name'),
-                    TextEntry::make('last_name'),
+                    TextEntry::make('name'),
+                    // TextEntry::make('last_name'),
                     TextEntry::make('email')
                         ->label('Email Address'),
                     TextEntry::make('employee_id'),

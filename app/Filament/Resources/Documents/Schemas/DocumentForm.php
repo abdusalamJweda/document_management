@@ -33,6 +33,7 @@ class DocumentForm
                     ->required(),
                     
                 SpatieMediaLibraryFileUpload::make('files')
+                    ->required()
                     ->collection('files'),
                 
                 DatePicker::make('issued_date')

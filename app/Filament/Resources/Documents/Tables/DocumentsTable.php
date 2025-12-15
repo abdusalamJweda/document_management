@@ -50,6 +50,11 @@ class DocumentsTable
                     ->label('Document Type')
                     ->sortable()
                     ->searchable(),
+
+                TextColumn::make('employee.department.name')
+                    ->label('Document Type')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('file')
                     ->label('File')
                     ->formatStateUsing(fn (): string => 'View File')

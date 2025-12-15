@@ -35,7 +35,7 @@ class EmployeeSeeder extends Seeder
         Employee::create([
             'name' => 'Muhaned Zbeda',
             // 'last_name' => 'Jwedaa',
-            'email' => 'a.zbeda@tfgroup.ly',
+            'email' => 'm.zbeda@tfgroup.ly',
             // 'type' => 'admin',
             'job_title' => 'Head',
             'employee_id' => '3121',
