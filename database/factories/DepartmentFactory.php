@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Employee>
  */
-class EmployeeFactory extends Factory
+class DepartmentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,10 +19,6 @@ class EmployeeFactory extends Factory
         return [
             // 'first_name' => fake()->firstName(),
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'job_title' => fake()->jobTitle(),
-            'employee_id' => fake()->unique()->randomNumber(4, true), 
-            'department' => fake()->company(),
         ];
     }
 }

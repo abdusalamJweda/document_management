@@ -17,11 +17,12 @@ class Employee extends Model
      * @var array
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
+        // 'first_name',
+        'name',
         'email',
         'job_title',
         'employee_id',
+        'department_id',
     ];
 protected $appends = ['name'];
     public function documents()
@@ -29,14 +30,18 @@ protected $appends = ['name'];
         return $this->hasMany(Document::class);
     }
 
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
     public function emailLog(){
         return $this->hasMany(EmailLog::class);
     }
 
-    public function getNameAttribute()
-    {
-        return $this->first_name . ' ' . $this->last_name;
-    }
+    // public function getNameAttribute()
+    // {
+    //     return $this->first_name . ' ' . $this->last_name;
+    // }
     public function getDocumentTypesAttribute(): string
     {
         // Use pluck to get the documentType relation from the documents, 

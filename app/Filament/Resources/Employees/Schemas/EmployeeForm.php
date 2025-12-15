@@ -11,15 +11,17 @@ class EmployeeForm
     {
         return $schema
             ->components([
-                TextInput::make('first_name')
-                    ->required(),
-                TextInput::make('last_name')
+                // TextInput::make('first_name')
+                //     ->required(),
+                TextInput::make('name')
                     ->required(),
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()
                     ->required(),
                 TextInput::make('job_title')
+                    ->required(),
+                TextInput::make('department_id')
                     ->required(),
                 TextInput::make('employee_id')
                     ->required(),

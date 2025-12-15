@@ -16,18 +16,35 @@ use Filament\Notifications\Notification;
 use App\Notifications\DocumentExpiryReminder;
 use App\Models\Document;
 use App\Models\EmailLog;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\DB; // <-- Add this import
+
 class DocumentsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->selectRaw('*, DATEDIFF(expiry_date, CURDATE()) as days_left'))
+            // 👇 MODIFICATION START: Filter the query to get the latest document ID for each employee and document type.
+            ->modifyQueryUsing(function (Builder $query) {
+                // Select the maximum document ID for each unique combination of employee_id and document_type_id
+                $latestDocuments = DB::table('documents')
+                    ->select(DB::raw('MAX(id)'))
+                    ->groupBy('employee_id', 'document_type_id');
+
+                // Filter the main query to only include documents whose ID is in the subquery result
+                $query->whereIn('id', $latestDocuments);
+
+                // Add the days_left calculation
+                $query->selectRaw('*, DATEDIFF(expiry_date, CURDATE()) as days_left');
+            })
+            // MODIFICATION END 👆
             ->defaultSort('days_left', 'asc') 
+            ->defaultGroup('employee.name')
             ->columns([
                 // Displays the employee's name from the related 'employee' model.
-                TextColumn::make('employee.name')
-                    ->sortable()
-                    ->searchable(),
+                // TextColumn::make('employee.name')
+                //     ->sortable()
+                //     ->searchable(),
                 // Displays the document type's name from the related 'documentType' model.
                 TextColumn::make('documentType.name')
                     ->label('Document Type')
@@ -68,7 +85,19 @@ class DocumentsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // 👇 Added SelectFilter for Employee Name
+                SelectFilter::make('employee_name')
+                    ->relationship('employee', 'name')
+                    ->label('Employee')
+                    ->searchable() // Allows searching within the dropdown
+                    ->preload(), // Loads all options initially for a better UX
+                SelectFilter::make('department')
+                    // Traverses Document -> employee -> department relationship and uses the department's 'name'
+                    ->relationship('employee.department', 'name') 
+                    ->label('Department')
+                    ->multiple() // This enables selecting multiple departments
+                    ->searchable()
+                    ->preload(),
             ])
             ->recordActions([
                 EditAction::make(),
