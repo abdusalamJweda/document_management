@@ -47,8 +47,8 @@ class DocumentExpiryReminder extends Notification
             ->markdown('emails.document-expiry-reminder', [ // Referencing the new Blade file
                 'notifiable' => $notifiable,
                 'document' => $this->document, 
-            ])
-            ->cc($ccRecipients ?? []);
+            ]);
+            // ->cc($ccRecipients ?? []);
             
         // $ccRecipients = Employee::where('type', 'admin')->pluck('email')->toArray();
         // return (new MailMessage)
