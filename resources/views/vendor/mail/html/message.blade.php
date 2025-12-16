@@ -3,7 +3,7 @@
 {{-- 
     <x-slot:header>
         <x-mail::header :url="config('app.url')">
-            {{ config('app.name') }}
+            Tadawul Financial Group.
         </x-mail::header>
     </x-slot:header>
 --}}
