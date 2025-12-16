@@ -7,4 +7,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('documents:remind-expiry')->dailyAt('10:00');
+Schedule::command('documents:remind-expiry')->everyMinute();
