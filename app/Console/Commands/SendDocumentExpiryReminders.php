@@ -42,7 +42,7 @@ class SendDocumentExpiryReminders extends Command
             ->whereHas('documentType', function ($query) {
                 $query->where('expiry_duration_days', '>', 0);
             })
-            ->where('is_expired', false)
+            // ->where('is_expired', false)
             ->get()
             ->filter(function ($document) {
                 // Calculate the expiry date
