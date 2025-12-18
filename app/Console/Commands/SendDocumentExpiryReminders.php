@@ -31,47 +31,61 @@ class SendDocumentExpiryReminders extends Command
      * Execute the console command.
      */
     public function handle()
-    {
-        Log::info('Document expiry reminders started successfully at '.now());
+{
+    Log::info('Document expiry reminders started successfully at '.now());
 
-        $today = Carbon::today();
+    // 1. Get the IDs of the latest documents for each employee and type
+    // This prevents reminders for old versions of the same document type.
+    $latestDocumentIds = Document::query()
+        ->selectRaw('MAX(id) as id')
+        ->groupBy('employee_id', 'document_type_id')
+        ->pluck('id');
 
-        // Get documents that are not expired and will expire in exactly 10 days
-        $documents = Document::query()
-            ->with(['employee', 'documentType'])
-            ->whereHas('documentType', function ($query) {
-                $query->where('expiry_duration_days', '>', 0);
-            })
-            // ->where('is_expired', false)
-            ->get()
-            ->filter(function ($document) {
-                // Calculate the expiry date
-                $issued_at = Carbon::parse($document->issued_date);
-                $expiryDate = $issued_at->addDays($document->documentType->expiry_duration_days);
+    // 2. Query only those specific IDs
+    $documents = Document::query()
+        ->whereIn('id', $latestDocumentIds)
+        ->with(['employee', 'documentType'])
+        ->whereHas('documentType', function ($query) {
+            $query->where('expiry_duration_days', '>', 0);
+        })
+        ->get()
+        ->filter(function ($document) {
+            // Use the expiry_date directly if it exists in your DB, 
+            // otherwise calculate it from issued_date
+            $expiryDate = $document->expiry_date 
+                ? Carbon::parse($document->expiry_date)
+                : Carbon::parse($document->issued_date)->addDays($document->documentType->expiry_duration_days);
+            
+            // Check if it expires within the next 10 days and is not already expired
+            $daysUntilExpiry = Carbon::today()->diffInDays($expiryDate, false);
+            
+            return $daysUntilExpiry <= 10 && $daysUntilExpiry >= 0;
+        });
+
+    foreach ($documents as $document) {
+        $employee = $document->employee;
+        
+        // Ensure we haven't already sent a reminder today to avoid duplicates 
+        // if the command runs multiple times
+        if ($employee && $employee->email && $document->last_reminder_date?->diffInDays(now()) !== 0) {
+            try {
+                $employee->notify(new DocumentExpiryReminder($document));
                 
-                // Check if the expiry date is exactly 10 days from now
-                return Carbon::today()->diffInDays($expiryDate, false) <= 10;
-            });
-
-        foreach ($documents as $document) {
-            $employee = $document->employee;
-            if ($employee && $employee->email) {
-                try {
-                    $employee->notify(new DocumentExpiryReminder($document));
                 EmailLog::create([
                     'employee_id' => $employee->id,
                     'document_id' => $document->id,
                     'document_type_id' => $document->document_type_id,
                 ]);
-                $document->last_reminder_date = Carbon::now();
-                $document->save();
+
+                $document->update(['last_reminder_date' => Carbon::now()]);
+                
                 $this->info("Sent expiry reminder for document ID {$document->id} to {$employee->email}");
-                } catch (\Throwable $th) {
-                    throw $th;
-                }
+            } catch (\Throwable $th) {
+                Log::error("Failed to send reminder for Doc ID {$document->id}: " . $th->getMessage());
             }
         }
-
-        $this->info('Document expiry reminders sent successfully.');
     }
+
+    $this->info('Document expiry reminders process completed.');
+}
 }
