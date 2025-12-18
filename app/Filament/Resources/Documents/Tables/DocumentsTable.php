@@ -16,36 +16,29 @@ use Filament\Notifications\Notification;
 use App\Notifications\DocumentExpiryReminder;
 use App\Models\Document;
 use App\Models\EmailLog;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Support\Facades\DB; // <-- Add this import
+use Illuminate\Support\Facades\DB; 
+use Filament\Forms\Components\Grid;
 
 class DocumentsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            // 👇 MODIFICATION START: Filter the query to get the latest document ID for each employee and document type.
             ->modifyQueryUsing(function (Builder $query) {
-                // Select the maximum document ID for each unique combination of employee_id and document_type_id
                 $latestDocuments = DB::table('documents')
                     ->select(DB::raw('MAX(id)'))
                     ->groupBy('employee_id', 'document_type_id');
 
-                // Filter the main query to only include documents whose ID is in the subquery result
                 $query->whereIn('id', $latestDocuments);
 
-                // Add the days_left calculation
-                $query->selectRaw('*, DATEDIFF(expiry_date, CURDATE()) as days_left');
+                $query->select('*')->selectRaw('DATEDIFF(expiry_date, CURDATE()) as days_left');
             })
-            // MODIFICATION END 👆
             ->defaultSort('days_left', 'asc') 
             ->defaultGroup('employee.name')
             ->columns([
-                // Displays the employee's name from the related 'employee' model.
-                // TextColumn::make('employee.name')
-                //     ->sortable()
-                //     ->searchable(),
-                // Displays the document type's name from the related 'documentType' model.
+
                 TextColumn::make('documentType.name')
                     ->label('Document Type')
                     ->sortable()
@@ -104,6 +97,16 @@ class DocumentsTable
                     ->searchable()
                     ->preload(),
             ])
+//             ->headerActions([
+//     FilamentExportHeaderAction::make('export')
+//         ->label('Print PDF')
+//         ->defaultFormat('pdf')
+//         ->enableGrouping() 
+//         ->extraViewData([
+//             'displayGroupName' => true,
+//         ])
+//         ->modalWidth('xl')
+// ])
             ->recordActions([
                 EditAction::make(),
                                 Action::make('send_expiration_email')
@@ -134,16 +137,16 @@ class DocumentsTable
                     // Only show the button if an expiry date and a linked employee exists
                     ->visible(fn (Document $record): bool => (bool) $record->employee && $record->expiry_date) 
                     ->tooltip('Send a manual expiry reminder email to the employee.'),
-                Action::make('view_pdf')
-                    ->label('View PDF')
-                    ->icon('heroicon-o-eye')
-                    ->modalAlignment(Alignment::Center)
-                    ->modalHeading(fn ($record) => $record->file)
-                    ->modalSubmitAction(false) // This removes the submit button from the modal
-                    ->modalCancelActionLabel('Close') // Change the cancel button text to 'Close'
-                    ->modalContent(fn ($record): View => view('filament.modals.pdf-viewer', [
-                        'record' => $record,
-                    ])),
+                // Action::make('view_pdf')
+                //     ->label('View PDF')
+                //     ->icon('heroicon-o-eye')
+                //     ->modalAlignment(Alignment::Center)
+                //     ->modalHeading(fn ($record) => $record->file)
+                //     ->modalSubmitAction(false) // This removes the submit button from the modal
+                //     ->modalCancelActionLabel('Close') // Change the cancel button text to 'Close'
+                //     ->modalContent(fn ($record): View => view('filament.modals.pdf-viewer', [
+                //         'record' => $record,
+                //     ])),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

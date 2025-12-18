@@ -17,6 +17,7 @@ use App\Filament\Resources\Employees\Pages\ViewEmployee;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use App\Models\Document;
+use Dom\Text;
 use Filament\Infolists\Components\RepeatableEntry;
 class EmployeeResource extends Resource
 {
@@ -60,7 +61,8 @@ public static function infolist(Schema $schema): Schema
                 ->columns(2)
                 ->components([
                     TextEntry::make('name'),
-                    
+                    TextEntry::make('department.name')
+                        ->label('Department'),
                     TextEntry::make('email')
                         ->label('Email Address'),
                     TextEntry::make('employee_id'),
